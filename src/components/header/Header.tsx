@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import api from "../../api/api";
-import {observer} from "mobx-react"
 import headerRerenderStore from "../../utis/stores/headerRerenderStore";
 import { AuthVerify } from "../../utis/scripts/AuthVerify";
 import stateStore from "../../utis/stores/stateStore";
@@ -12,6 +11,8 @@ import {Link} from 'react-router-dom'
 import { Logout } from "../../pages/identity/Logout";
 import { Modal } from "../../utis/components/modal/Modal";
 import { Notifications } from "../../pages/Notifications";
+import React from "react";
+import { observer } from "mobx-react-lite";
 
 
 export const Header = observer(() => {

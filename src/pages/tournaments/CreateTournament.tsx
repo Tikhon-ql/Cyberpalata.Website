@@ -46,11 +46,11 @@ export const CreateTournament = ()=>{
         };
         console.dir(requestBody);
         api.post(`/tournaments/createTournament`,requestBody)
-        .then(res=>{ 
+        .then((res:any)=>{ 
             toast.success("Tournament created successfully");
             navigate("/");
         })
-        .catch(error=>
+        .catch((error:any)=>
             {
                 const data = error.response.data;
                 if(error.code && error.code == "ERR_NETWORK")

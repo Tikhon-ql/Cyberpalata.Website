@@ -33,6 +33,7 @@ import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { useState } from 'react';
 import { joinNotificationsBroadcasting } from './utis/scripts/signalR';
 import { NotFound } from './utis/components/errors/NotFound';
+import React from "react";
 
 export const App = () => {
 
@@ -72,8 +73,8 @@ export const App = () => {
                 <Route path="/joinRequests" element={<JoinRequests/>}></Route>
                 <Route path="/hiringTeam" element={<HiringTeams/>}></Route>
                 <Route path="/basket" element={<Basket/>}></Route>   
-                {/* <Route path="/payment/:bookingId" element={<Payment/>}></Route>   */}
-                <Route path="/payment" element={<Payment/>}></Route>  
+                <Route path="/payment/:bookingId" element={<Payment/>}></Route>  
+                {/* <Route path="/payment" element={<Payment/>}></Route>   */}
                 <Route path="/createTournament" element={<CreateTournament/>}/> 
                 <Route path="/selectWinner/:tournamentId/:batleId/:firstTeamName/:firstTeamId/:secondTeamName/:secondTeamId" element={<SelectWinner/>}></Route>
                 <Route path="/404" element={<NotFound/>}/>

@@ -39,10 +39,10 @@ export const Registration = ()=>{
         }
         console.log(data.email);
 
-        api.post(`/users/register`, data).then((res)=>
+        api.post(`/users/register`, data).then((res:any)=>
         {  
             navigate(`/emailConfirm/${data.email}/${res.data}`);
-        }).catch((error)=>
+        }).catch((error:any)=>
         {
             if(error.code && error.code == "ERR_NETWORK")
             {

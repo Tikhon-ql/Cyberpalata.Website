@@ -13,9 +13,9 @@ export const ShowQrCode = () => {
 
     useEffect(()=>{
         api.get(`/tournaments/getTournamentSmall?id=${tournamentId}`)
-        .then(res=>{
+        .then((res:any)=>{
             setTournament(res.data);
-        }).catch((error)=>{
+        }).catch((error:any)=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
                 setIternalServerError(true);

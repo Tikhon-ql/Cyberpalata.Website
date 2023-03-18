@@ -22,7 +22,7 @@ export const HiringTeams = () => {
     const [iternalServerError, setIternalServerError] = useState<boolean>(false);
 
     useEffect(()=>{
-       api.get(`/teams/getHiringTeams?page=${curPage}`).then(res=>{
+       api.get(`/teams/getHiringTeams?page=${curPage}`).then((res:any)=>{
             setTeamList(res.data);
        });
     },[]);
@@ -42,14 +42,14 @@ export const HiringTeams = () => {
             }
         }
         // console.dir(requestBody);
-        api.post(`/joinRequests/createJoinRequest?teamId=${event.target.id}`).then(res=>{
+        api.post(`/joinRequests/createJoinRequest?teamId=${event.target.id}`).then((res:any)=>{
             toast.success("Request sended successfully");
             if(team)
             {
                 sendNotification(notificationStore.connection, team.captainId);
                 console.log("Notifications sent");
             }
-        }).catch(error=>{
+        }).catch((error:any)=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
                 setIternalServerError(true);

@@ -53,7 +53,7 @@ export const RoomTable = ({gamingList, loading}: Props) => {
                                     {room.name}
                                 </td>
                                 <td style={{"textAlign":"center"}}>
-                                    10
+                                    {room.freeSeatsCount == "-1" ? "-" : room.freeSeatsCount}
                                 </td>
                                 <td style={{backgroundColor:"#238D43"}}>
                                     <Link to={`/room/${room.id}/${room.name}`} style={{"textAlign":"center"}}>Info</Link>

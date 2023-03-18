@@ -17,9 +17,9 @@ export const EmailConfirm = ()=>{
             "userId" : userId,
             "email" : email
         };
-        api.post(`/users/emailConfirm`,requestBody).then(res=>{
+        api.post(`/users/emailConfirm`,requestBody).then((res:any)=>{
             setCode(res.data);
-        }).catch(error=>{
+        }).catch((error:any)=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
                 setIternalServerError(true);
@@ -43,7 +43,7 @@ export const EmailConfirm = ()=>{
             };
             api.put(`/users/activate`,requestBody).then(()=>{
                 navigate('/');
-            }).catch(error=>{
+            }).catch((error:any)=>{
                 if(error.code && error.code == "ERR_NETWORK")
                 {
                     setIternalServerError(true);

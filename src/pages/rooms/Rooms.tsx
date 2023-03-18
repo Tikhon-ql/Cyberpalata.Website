@@ -30,23 +30,28 @@ export const Rooms = () => {
     const [gamingList, setGamingList] = useState<RoomList>({items:[
         {
             id:"room1",
-            name:"Room 1"
+            name:"Room 1",
+            freeSeatsCount:"-"
         },
         {
             id:"room1",
-            name:"Room 2"
+            name:"Room 2",
+            freeSeatsCount:"-"
         },
         {
             id:"room1",
-            name:"Room 3"
+            name:"Room 3",
+            freeSeatsCount:"-"
         },
         {
             id:"room1",
-            name:"Room 4"
+            name:"Room 4",
+            freeSeatsCount:"-"
         },
         {
             id:"room1",
-            name:"Room 5"
+            name:"Room 5",
+            freeSeatsCount:"-"
         },
     ],
     totalItemsCount: 15,
@@ -64,10 +69,10 @@ export const Rooms = () => {
             hoursCount: hoursCount,
             page: curPage
         }
-        api.post(`/gamingRooms/getRooms`,requestBody).then(res => {
+        api.post(`/gamingRooms/getRooms`,requestBody).then((res:any) => {
             setGamingList(res.data);
             setCurPage(res.data.currentPage);
-        }).catch(error=>{
+        }).catch((error:any)=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
                 setIternalServerError(true);
@@ -105,7 +110,7 @@ export const Rooms = () => {
     //     }       
     // },[gamingList])
 
-    return <>{iternalServerError ? <div>
+    return <>{false ? <div>
         <IternalServerError/>
     </div>:<div>
     <div style={{"display":"flex","justifyContent":"center","alignItems":"center","width":"100%","height":"89vh","marginTop":"1vh"}}>

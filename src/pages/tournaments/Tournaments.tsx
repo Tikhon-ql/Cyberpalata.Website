@@ -6,7 +6,6 @@ import { Pagination } from "../../utis/components/pagination/Pagination";
 import api from "../../api/api";
 import { TournamentTable } from "./TournamentTable";
 import { Loader } from "../../utis/components/loader/Loader";
-import { toPrimitive } from "mobx/dist/internal";
 import { IternalServerError } from "../../utis/components/errors/IternalServerError";
 
 export type TournamentList = {
@@ -84,11 +83,11 @@ export const Tournaments = ()=>{
             requestBody.actualTournaments = true;
         }
 
-        api.post(`/tournaments/getTournaments`,requestBody).then(res=>{
+        api.post(`/tournaments/getTournaments`,requestBody).then((res:any)=>{
             console.dir(res.data);
             setTournamentList(res.data);
            
-        }).catch(error=>{
+        }).catch((error:any)=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
                 setIternalServerError(true);

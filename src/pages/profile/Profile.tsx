@@ -34,7 +34,7 @@ export const Profile = observer(() => {
 
     const [teamName, setTeamName] = useState<string>("");
 
-    const [team, setTeam] = useState<TeamDetailed>({id:"",name:"",captainName:"",members:[]});
+    const [team, setTeam] = useState<TeamDetailed>({id:"",name:"",captainName:"",members:[],isTeamRecruting:false});
 
     function createTeam()
     {
@@ -42,7 +42,7 @@ export const Profile = observer(() => {
             "name": teamName
         };
         api.post(`/teams/createTeam/`,requestBody).then(()=>{ navigate('/profile')
-        }).catch(error=>
+        }).catch((error:any)=>
             {
                 const data = error.response.data;
                 if(error.code && error.code == "ERR_NETWORK")
@@ -62,6 +62,7 @@ export const Profile = observer(() => {
                 //     setTeamNameError(data.Name);
                 // }
             }).finally(()=>{
+                setModalActive(false);
            ;
         })
     }
@@ -69,7 +70,7 @@ export const Profile = observer(() => {
     let state = true;
     useEffect(()=>{
         setLoading(true);
-        api.get(`/users/getUserProfile`).then(res =>{
+        api.get(`/users/getUserProfile`).then((res:any) =>{
             console.dir(res);
             setProfile(res.data);
             // setName(res.data.username);
@@ -77,7 +78,7 @@ export const Profile = observer(() => {
             // setEmail(res.data.email);
             // setPhone(res.data.phone);
             
-        }).catch(error=>{
+        }).catch((error:any)=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
                 setIternalServerError(true);
@@ -109,7 +110,7 @@ export const Profile = observer(() => {
             setEditingActive(false);
             setSubmitState(!submitState);
             navigate('/profile');
-        }).catch(error=>{
+        }).catch((error:any)=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
                 setIternalServerError(true);
@@ -218,7 +219,7 @@ export const Profile = observer(() => {
     } 
     <Modal active={modalActive} setActive={setModalActive} >
         <form onSubmit={(e)=>{e.preventDefault(); createTeam();}}>
-            <input type="text" placeholder="Team name..." onChange={(e) =>{setModalActive(false);setTeamName(e.target.value)}}/>
+            <input type="text" placeholder="Team name..." onChange={(e) =>{setTeamName(e.target.value)}}/>
             <input type="submit" value="Submit"/>
         </form>
     </Modal>

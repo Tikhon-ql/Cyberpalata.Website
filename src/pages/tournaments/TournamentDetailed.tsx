@@ -75,7 +75,7 @@ export const TournamentDetailed= ()=> {
 
     
     useEffect(()=>{
-        api.get(`/tournaments/getTournamentDetaile?tournamentId=${id}`).then(res=>{
+        api.get(`/tournaments/getTournamentDetaile?tournamentId=${id}`).then((res:any)=>{
             console.log("anime23123");
             console.dir(res.data);
             setTournamentId(res.data.tournamentId);
@@ -109,7 +109,7 @@ export const TournamentDetailed= ()=> {
             console.dir(treeData);
             //console.dir(tournament); 
             setIsLoaded(true);
-        }).catch(error=>{
+        }).catch((error:any)=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
                 setIternalServerError(true);

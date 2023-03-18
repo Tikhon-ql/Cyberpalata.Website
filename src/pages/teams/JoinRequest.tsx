@@ -12,7 +12,7 @@ export const JoinRequests = ()=>{
 
     useEffect(()=>{
         console.log("Log 1");
-        api.get(`/joinRequests/getTeamJoinRequests`).then(res=>{
+        api.get(`/joinRequests/getTeamJoinRequests`).then((res:any)=>{
             console.log("Join requests");
             console.dir(res);
             setJoinRequest(res.data[0]);
@@ -27,8 +27,8 @@ export const JoinRequests = ()=>{
             teamId: joinRequest?.teamId,
             state: state
         }
-        api.put(`/joinRequests/inProgressJoinRequest`,requestBody).then(res=>{toast.success("Accepted successfully")})
-        .catch((error)=>{
+        api.put(`/joinRequests/inProgressJoinRequest`,requestBody).then((res:any)=>{toast.success("Accepted successfully")})
+        .catch((error:any)=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
                 setIternalServerError(true);

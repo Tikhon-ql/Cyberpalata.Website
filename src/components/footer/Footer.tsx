@@ -1,3 +1,5 @@
+import React from "react";
+
 export const Footer = ()=>{
     return <div className="footer d-flex">
         <div style={{"display":"flex","justifyContent":"start","alignItems":"center","height":"100%"}}>

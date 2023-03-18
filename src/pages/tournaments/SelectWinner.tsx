@@ -35,9 +35,9 @@ export const SelectWinner = ({batle,tournamentId, setModalState}:Props) => {
             winnerId: e.target.elements.winner.value
         }
         console.dir(requestBody);
-        api.post(`/batles/setWinner`,requestBody).then(res=>{navigate(`/showTournamentDetailed/${tournamentId}`)}).catch(error=>{toast.error(error.data)}).finally(()=>{
+        api.post(`/batles/setWinner`,requestBody).then((res:any)=>{navigate(`/showTournamentDetailed/${tournamentId}`)}).catch((error:any)=>{toast.error(error.data)}).finally(()=>{
             setModalState(false);
-        }).catch(error=>{
+        }).catch((error:any)=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
                 setIternalServerError(true);

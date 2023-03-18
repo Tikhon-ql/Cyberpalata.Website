@@ -26,7 +26,7 @@ export const Logout = observer(({setModalActive}: any) => {
             api.post(`/authentication/logout`, requestBody).then(()=>
             {
                 
-            }).catch(error=>{
+            }).catch((error:any)=>{
                 if(error.code && error.code == "ERR_NETWORK")
                 {
                     setIternalServerError(true);

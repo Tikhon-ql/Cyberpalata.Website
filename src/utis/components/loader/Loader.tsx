@@ -5,10 +5,10 @@ type Props = {
 }
 
 export const Loader = ({loading}:Props)=>{
-    return <>
+    return(<>
        <ClimbingBoxLoader
             color={"white"}
             loading={loading}
         />
-    </>
+    </>)
 }

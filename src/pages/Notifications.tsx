@@ -5,6 +5,7 @@ import api from "../api/api";
 import { AuthVerify } from "../utis/scripts/AuthVerify";
 import headerRerenderStore from "../utis/stores/headerRerenderStore";
 import { Notification } from "../utis/types/types";
+import React from "react";
 
 export const Notifications = observer(() => {
 
@@ -20,7 +21,7 @@ export const Notifications = observer(() => {
                 console.log("Anime");
                 console.dir(res.data);
                 setNotifications(res.data);
-            }).catch(error=>{
+            }).catch((error:any)=>{
                 if(error.code && error.code == "ERR_NETWORK")
                 {
                     setIternalServerError(true);

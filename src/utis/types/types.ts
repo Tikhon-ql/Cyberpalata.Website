@@ -38,7 +38,8 @@ export type Periphery = {
 
 export type RoomItem = {
     id: string,
-    name: string
+    name: string,
+    freeSeatsCount: string,
 }
 
 export type Team = {
@@ -105,7 +106,8 @@ export type TeamDetailed = {
     id: string,
     name: string,
     captainName:string,
-    members: TeamMember[]   
+    members: TeamMember[],
+    isTeamRecruting: boolean
 }
 export type TeamMember = {
     name:string,

@@ -14,18 +14,22 @@ export const TeamInfo = ({isCaptain}:Props)=>{
     const [team, setTeam] = useState<TeamDetailed>();
     const [iternalServerError, setIternalServerError] = useState<boolean>(false);
     useEffect(()=>{
-        api.get(`/teams/getUserTeam`).then(res=>{
+        api.get(`/teams/getUserTeam`).then((res:any)=>{
             setTeam(res.data);
         })
     },[])
 
-    function sendTeamStartRecruting()
+    function sendTeamRecrutingStateChange(state:boolean)
     {
-        api.put(`/teams/setRecruting?teamId=${team?.id}`)
+        var requestBody = {
+            teamId: team?.id,
+            state: state
+        }
+        api.put(`/teams/setRecruting`,requestBody)
         .then(()=>{
             toast.success("Request sent successfully");
         })
-        .catch((error)=>{
+        .catch((error:any)=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
                 setIternalServerError(true);
@@ -42,7 +46,7 @@ export const TeamInfo = ({isCaptain}:Props)=>{
         api.delete(`/teams/deleteTeam?teamId=${team?.id}`)
         .then(()=>{
             toast.success("Team deleted successfully");
-        }).catch((error)=>{
+        }).catch((error:any)=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
                 setIternalServerError(true);
@@ -59,7 +63,7 @@ export const TeamInfo = ({isCaptain}:Props)=>{
         api.delete(`/teams/leaveTeam?teamId=${team?.id}`)
         .then(()=>{
             toast.success("You left team successfully");
-        }).catch((error)=>{
+        }).catch((error:any)=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
                 setIternalServerError(true);
@@ -75,7 +79,8 @@ export const TeamInfo = ({isCaptain}:Props)=>{
     <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
         <h3 style={{"textAlign":"center"}}>{team?.name}</h3>
         {isCaptain ? <div>
-                <a onClick={(e) => {e.preventDefault(); sendTeamStartRecruting()}} className="m-1">Recruting</a>
+                 {team?.isTeamRecruting ? <a onClick={(e) => {e.preventDefault(); sendTeamRecrutingStateChange(false)}} className="m-1">Disable recruting</a> : <a onClick={(e) => {e.preventDefault(); sendTeamRecrutingStateChange(true)}} className="m-1">Enable recruting</a>}
+                
                 <a className="m-1" onClick={(e)=>{e.preventDefault(); deleteTeam()}}>Delete</a>
         </div>:<a className="m-1" onClick={(e)=>{e.preventDefault(); leaveTeam()}}>Leave</a> }
     </div>

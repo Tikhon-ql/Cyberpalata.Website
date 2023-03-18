@@ -26,8 +26,8 @@ export const SelectWinner = () => {
             winnerId: e.target.elements.winner.value
         }
         console.dir(requestBody);
-        api.post(`/batles/setWinner`,requestBody).then(res=>{navigate(`/showTournamentDetailed/${tournamentId}`)})
-        .catch((error)=>{
+        api.post(`/batles/setWinner`,requestBody).then((res:any)=>{navigate(`/showTournamentDetailed/${tournamentId}`)})
+        .catch((error:any)=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
                 setIternalServerError(true);

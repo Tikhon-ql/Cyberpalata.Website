@@ -6,53 +6,26 @@ import { BookingCollection } from "../../utis/types/types";
 
 export const Basket = () => {
 
-    const[bookings, setBookings] = useState<BookingCollection[]>([
-        {
-            id:"d;kk",
-            roomName: "Room 1",
-            date: "03.10.2023",
-            begining:"10:10",
-            hoursCount: 10,
-            price: 15,
-            seats:[1,2,3,4]
-        },
-        {
-            id:"d;kk",
-            roomName: "Room 2",
-            date: "04.10.2023",
-            begining:"20:00",
-            hoursCount: 3,
-            price: 10,
-            seats:[7,6,8]
-        },
-        {
-            id:"d;kk",
-            roomName: "Room 3",
-            date: "04.11.2023",
-            begining:"21:00",
-            hoursCount: 2,
-            price: 13,
-            seats:[7,6,8,10,15,13,46]
-        }
-    ]);
+    const[bookings, setBookings] = useState<BookingCollection[]>();
     const [iternalServerError, setIternalServerError] = useState<boolean>(false);
 
     useEffect(()=>{
-        // api.get(`/booking/getBasket`).then(res=>
-        // {
-        //     setBookings(res.data);
-        // }).catch((error)=>{
-        //     if(error.code && error.code == "ERR_NETWORK")
-        //     {
-        //         //navigate('/500');
-        //         setIternalServerError(true);
-        //     }
-        //     if((error.response.status >= 500 && error.response.status <= 599))
-        //     {
-        //         //navigate('/500');
-        //        setIternalServerError(true);
-        //     }
-        // });
+        api.get(`/booking/getBasket`).then(res=>
+        {
+            setBookings(res.data);
+            console.dir(bookings);
+        }).catch((error)=>{
+            if(error.code && error.code == "ERR_NETWORK")
+            {
+                //navigate('/500');
+                setIternalServerError(true);
+            }
+            if((error.response.status >= 500 && error.response.status <= 599))
+            {
+                //navigate('/500');
+               setIternalServerError(true);
+            }
+        });
     });
 
     return <div className="myConteiner"> {iternalServerError ? <div>
@@ -90,12 +63,12 @@ export const Basket = () => {
                             <td style={{"textAlign":"center"}}>
                                 {item.begining}
                             </td>
-                            <td style={{"textAlign":"center"}}>
+                            {/* <td style={{"textAlign":"center"}}>
                                 {item.seats.map((seat: number, index)=>{
                                     return <> {seat}
                                     </>
                                 })}
-                            </td>
+                            </td> */}
                             <td style={{backgroundColor:"#FFC840"}}>
                                 <Link to={`/payment/${item.id}`}>Pay</Link>
                             </td>

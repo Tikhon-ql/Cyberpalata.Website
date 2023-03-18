@@ -34,7 +34,7 @@ const Login = () => {
             "email":event.target.elements.email.value,
             "password":event.target.elements.password.value
         }
-        api.post(`/authentication/login`, data).then(res=>
+        api.post(`/authentication/login`, data).then((res:any)=>
         {
             localStorage.setItem('accessToken', res.data.accessToken);
             localStorage.setItem('refreshToken', res.data.refreshToken);
@@ -44,7 +44,7 @@ const Login = () => {
 
             headerRerenderStore.state = !headerRerenderStore.state;
             navigate("/");
-        }).catch(error=>{
+        }).catch((error:any)=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
                 setIternalServerError(true);

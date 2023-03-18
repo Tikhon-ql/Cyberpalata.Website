@@ -4,7 +4,7 @@ const api = axios.create({baseURL: 'https://localhost:7227'});
 //https://localhost:7227
 //https://dotnetinternship2022.norwayeast.cloudapp.azure.com:84/
 api.interceptors.request.use(
-    config=> {
+    (config:any)=> {
         const accessToken = localStorage.getItem('accessToken');
         if(accessToken)
         {
@@ -12,7 +12,7 @@ api.interceptors.request.use(
         }
         return config
     },
-    error=>{
+    (error:any)=>{
         console.error();
         return Promise.reject(error);
     }   

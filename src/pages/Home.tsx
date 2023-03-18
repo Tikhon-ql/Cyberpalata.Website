@@ -1,5 +1,6 @@
 import './../App.css';
 import {Link} from 'react-router-dom'
+import React from "react";
 
 // const img = React.lazy(() => import())
 

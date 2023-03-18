@@ -39,8 +39,8 @@ export const RoomInfo = () => {
     },[]);
 
 
-    return <> { iternalServerError ? <div>
-                    <IternalServerError/>
+    return <> { false ? <div>
+                    {/* <IternalServerError/> */}
                 </div>
 
         : <div style={{"display":"flex","justifyContent":"center","alignItems":"center","width":"100%","height":"80vh"}}>

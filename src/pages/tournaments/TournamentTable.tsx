@@ -31,7 +31,7 @@ export const TournamentTable = ({tournamentList, isCaptain}:Props)=>{
         };
         api.put(`/tournaments/registerTeam`,requestBody).then(()=>{
             toast.success('Successful registration');
-        }).catch(error=>{
+        }).catch((error:any)=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
                 setIternalServerError(true);
