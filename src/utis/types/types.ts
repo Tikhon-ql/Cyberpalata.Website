@@ -5,7 +5,8 @@ export type BookingCollection = {
     date: string,
     begining: string,
     hoursCount: number,
-    price: number
+    price: number,
+    seats: number[],
 };
 
 export type Seat = {

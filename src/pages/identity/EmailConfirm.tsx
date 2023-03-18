@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { Link,Navigate,useLocation, useNavigate, useParams } from "react-router-dom";
 import React from 'react';
 import api from "../../api/api";
+import { IternalServerError } from "../../utis/components/errors/IternalServerError";
 
 export const EmailConfirm = ()=>{
     const navigate = useNavigate();
     const {email} = useParams<string>();
     const {userId} = useParams<string>();
     const [code,setCode] = useState(0);
+    const [iternalServerError, setIternalServerError] = useState<boolean>(false);
     useEffect(()=>{
 
         const requestBody = 
@@ -20,11 +22,11 @@ export const EmailConfirm = ()=>{
         }).catch(error=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
-                navigate('/500');
+                setIternalServerError(true);
             }
             if((error.response.status >= 500 && error.response.status <= 599))
             {
-                navigate('/500');
+                setIternalServerError(true);
             }
         });
     },[]);
@@ -44,11 +46,11 @@ export const EmailConfirm = ()=>{
             }).catch(error=>{
                 if(error.code && error.code == "ERR_NETWORK")
                 {
-                    navigate('/500');
+                    setIternalServerError(true);
                 }
                 if((error.response.status >= 500 && error.response.status <= 599))
                 {
-                    navigate('/500');
+                    setIternalServerError(true);
                 }
             });
         }
@@ -59,7 +61,10 @@ export const EmailConfirm = ()=>{
     }
 
 
-    return <div style={{display:"flex",justifyContent:"center",alignItems:"center",width:"100%",height:"80vh"}}>
+    return <>{iternalServerError ? <div>
+        <IternalServerError/>
+    </div>:
+        <div style={{display:"flex",justifyContent:"center",alignItems:"center",width:"100%",height:"80vh"}}>
         <div>
             <div style={{color:"white",marginBottom:"2vh"}}>On your email we send a message</div>
             <form onSubmit={sendActivateRequest}>
@@ -75,4 +80,6 @@ export const EmailConfirm = ()=>{
             </form>
         </div>
     </div>
+    }
+    </> 
 }   

@@ -6,6 +6,7 @@ import React from "react";
 import { ClimbingBoxLoader } from "react-spinners";
 import api from "../../api/api";
 import { Loader } from "../../utis/components/loader/Loader";
+import { IternalServerError } from "../../utis/components/errors/IternalServerError";
 
 
 export const Registration = ()=>{
@@ -22,6 +23,7 @@ export const Registration = ()=>{
     const [passwordError, setPasswordError] = useState<string>("");
     const [passwordConfirmError, setPasswordConfirmError] = useState<string>("");
     const [loading,setLoading] = useState<boolean>(false);
+    const [iternalServerError, setIternalServerError] = useState<boolean>(false);
 
     function sendRegisterRequest(event: any)
     {
@@ -44,11 +46,11 @@ export const Registration = ()=>{
         {
             if(error.code && error.code == "ERR_NETWORK")
             {
-                navigate('/500');
+                setIternalServerError(true);
             }
             if((error.response.status >= 500 && error.response.status <= 599))
             {
-                navigate('/500');
+                setIternalServerError(true);
             }
             let data = error.response.data;
             if(data.Other)
@@ -94,7 +96,9 @@ export const Registration = ()=>{
     }
 
 
-    return <div style={{"display":"flex","justifyContent":"center","alignItems":"center","width":"100%","height":"80vh"}}>
+    return <>{iternalServerError ? <div>
+        <IternalServerError/>
+    </div> : <div style={{"display":"flex","justifyContent":"center","alignItems":"center","width":"100%","height":"80vh"}}>
         {loading ?  
 
          <Loader loading={loading}/>
@@ -126,7 +130,8 @@ export const Registration = ()=>{
                 <button type="submit" className="btn btn-primary btn-block btn-large">Register</button>
             </form>
         </div>}
-    </div>
+    </div>}
+    </> 
 }
 {/* 
 <div className="d-flex align-items-center justify-content-center">

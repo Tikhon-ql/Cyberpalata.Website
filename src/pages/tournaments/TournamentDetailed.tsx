@@ -4,6 +4,7 @@ import React from 'react';
 // import './custom-tree.css';
 import api from "../../api/api";
 import { TreeMap } from "./TreeMap";
+import { IternalServerError } from "../../utis/components/errors/IternalServerError";
 
 
 var treeData = {
@@ -29,6 +30,7 @@ export const TournamentDetailed= ()=> {
     const [thirdRoundCoef, setThirdRoundCoef] = useState<number>(2);
     const [winner, setWinner] = useState<string>("");
     const [modalActive, setModalActive] = useState<boolean>();
+    const [iternalServerError, setIternalServerError] = useState<boolean>(false);
 
     const [tournamentId, setTournamentId] = useState<string>("");
     function initTree(node:any, list:any, parIndex:number)
@@ -107,6 +109,15 @@ export const TournamentDetailed= ()=> {
             console.dir(treeData);
             //console.dir(tournament); 
             setIsLoaded(true);
+        }).catch(error=>{
+            if(error.code && error.code == "ERR_NETWORK")
+            {
+                setIternalServerError(true);
+            }
+            if((error.response.status >= 500 && error.response.status <= 599))
+            {
+                setIternalServerError(true);
+            }
         });
     },[modalActive]);
     // useEffect(()=>{
@@ -115,14 +126,14 @@ export const TournamentDetailed= ()=> {
 
     //     }
     // },[treeData]);
-    return (
-        <div>
-            {winner != "" && 
-            <div>
-                <h1>Winner: {winner}</h1>
-            </div>}
-            <TreeMap tournamentId={tournamentId} treeData={treeData} modalActive={modalActive} setModalActive = {setModalActive}/>
-        </div>
+    return (<>{iternalServerError ? <div><IternalServerError/></div>: <div>
+    {winner != "" && 
+    <div>
+        <h1>Winner: {winner}</h1>
+    </div>}
+    <TreeMap tournamentId={tournamentId} treeData={treeData} modalActive={modalActive} setModalActive = {setModalActive}/>
+</div>}</>
+       
         // <svg ref={svgRef}>
 
         // </svg>

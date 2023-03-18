@@ -7,6 +7,7 @@ import { ChatUser, Message, MessageToSend } from "../../utis/types/types";
 import api from "../../api/api";
 import { joinChatRoom, sendMessage, sendNotification } from "../../utis/scripts/signalR";
 import notificationStore from "../../utis/stores/notificationStore";
+import { IternalServerError } from "../../utis/components/errors/IternalServerError";
 // export type MessageList = {
 //     items: Message[],
 //     pageSize: number,
@@ -21,6 +22,7 @@ export const Chat = ()=>{
     const [connection, setConnection] = useState();
     const [user,setUser] = useState<ChatUser>({id:"",email:""});
     const [messageList, setMessageList] = useState<Message[]>([]);
+    const [iternalServerError, setIternalServerError] = useState<boolean>(false);
 
     const [message, setMessage] = useState<string>("");
 
@@ -38,7 +40,16 @@ export const Chat = ()=>{
     useEffect(()=>{
         api.get(`/chats/getMessages?chatId=${chatId}`).then(res=>{
             setMessageList(res.data);
-        });
+        }).catch((error=>{
+            if(error.code && error.code == "ERR_NETWORK")
+            {
+                setIternalServerError(true);
+            }
+            if((error.response.status >= 500 && error.response.status <= 599))
+            {
+                setIternalServerError(true);
+            }
+        }));
 
         joinChatRoom(user,chatId ,setConnection,setMessageList);
     },[]);
@@ -53,15 +64,27 @@ export const Chat = ()=>{
         };
         api.put(`/joinRequests/answerJoinRequest`,requestBody).then(()=>{
             sendNotification(notificationStore.connection, otherId as string);
+        }).catch((error)=>{
+            if(error.code && error.code == "ERR_NETWORK")
+            {
+                setIternalServerError(true);
+            }
+            if((error.response.status >= 500 && error.response.status <= 599))
+            {
+                setIternalServerError(true);
+            }
         });
     }
 
-    return <div className="myConteiner">
+    return <>{iternalServerError ? <div>
+        <IternalServerError/>
+    </div>:
+    <div className="myConteiner">
         <div className="chatPlaceholder">
             <div className="messageContainer">
                 <MessageContainer messages={messageList} curUser={user.email}/>
             </div>
-           
+        
             <form onSubmit={(e)=>
                 {
                     e.preventDefault();
@@ -79,6 +102,8 @@ export const Chat = ()=>{
             </form>
         </div>
     </div>
+    }
+</> 
 }
 
 

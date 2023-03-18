@@ -8,6 +8,8 @@ import jwt_decode from "jwt-decode";
 import { ClimbingBoxLoader } from 'react-spinners';
 import headerRerenderStore from '../../utis/stores/headerRerenderStore';
 import api from '../../api/api';
+import { Loader } from '../../utis/components/loader/Loader';
+import { IternalServerError } from '../../utis/components/errors/IternalServerError';
 
 const Login = () => {
     const [email, setEmail] = useState<string>("");
@@ -15,6 +17,7 @@ const Login = () => {
     const [emailError,setEmailError] = useState<string>("");
     const [passwordError, setPasswordError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
+    const [iternalServerError, setIternalServerError] = useState<boolean>(false);
     let navigate = useNavigate();
     function clearErrors()
     {
@@ -44,13 +47,11 @@ const Login = () => {
         }).catch(error=>{
             if(error.code && error.code == "ERR_NETWORK")
             {
-                //navigate('/500');
-                //setIternalServerError(true);
+                setIternalServerError(true);
             }
             if((error.response.status >= 500 && error.response.status <= 599))
             {
-                //navigate('/500');
-               //setIternalServerError(true);
+                setIternalServerError(true);
             }
             let data = error.response.data;
             if(data.Other)
@@ -69,27 +70,24 @@ const Login = () => {
         .finally(()=>{ setLoading(false);});     
     }
 
-return <div style={{"display":"flex","justifyContent":"center","alignItems":"center","width":"100%","height":"80vh"}}>{loading ? <div> 
-        <ClimbingBoxLoader
-            color={"white"}
-            loading={loading}
-
-            // size={30}
-            />
-        </div> : 
-        <div className="myForm">
-            <h1>SignIn</h1>
-            <form method="post" onSubmit={(e)=>{sendLoginRequest(e)}}>
-                {otherError != "" && <div className="text-danger m-1 rounded">{otherError}</div>}
-                {emailError != "" && <div className="text-danger m-1 rounded">{emailError}</div>}
-                <input type="email" name="email" onInput={clearErrors} value={email} onChange={(event)=>{setEmail(event.target.value)}} placeholder="Email"/>
-                {passwordError != "" && <div className="text-danger m-1 rounded">{passwordError}</div>}
-                <input type="password"  name="password" onInput={clearErrors} placeholder="Password"/>
-                <button type="submit" className="btn btn-primary btn-block btn-large">Let me in.</button>
-            </form>
-      </div>
-    }
+return <>{iternalServerError ? <div><IternalServerError/></div> : 
+    <div style={{"display":"flex","justifyContent":"center","alignItems":"center","width":"100%","height":"80vh"}}>{loading ? <div> 
+        <Loader loading={loading}/>
+    </div> : 
+    <div className="myForm">
+        <h1>SignIn</h1>
+        <form method="post" onSubmit={(e)=>{sendLoginRequest(e)}}>
+            {otherError != "" && <div className="text-danger m-1 rounded">{otherError}</div>}
+            {emailError != "" && <div className="text-danger m-1 rounded">{emailError}</div>}
+            <input type="email" name="email" onInput={clearErrors} value={email} onChange={(event)=>{setEmail(event.target.value)}} placeholder="Email"/>
+            {passwordError != "" && <div className="text-danger m-1 rounded">{passwordError}</div>}
+            <input type="password"  name="password" onInput={clearErrors} placeholder="Password"/>
+            <button type="submit" className="btn btn-primary btn-block btn-large">Let me in.</button>
+        </form>
     </div>
+    }
+    </div>}
+    </> 
 }
 
 export default observer(Login);

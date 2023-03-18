@@ -7,6 +7,7 @@ import { Loader } from "../../utis/components/loader/Loader";
 import { Pagination } from "../../utis/components/pagination/Pagination";
 import { UserTournament } from "../../utis/types/types";
 import { QRCodeCanvas } from "qrcode.react";
+import { IternalServerError } from "../../utis/components/errors/IternalServerError";
 
 export type UserTournamentList = {
     items: UserTournament[],
@@ -17,6 +18,7 @@ export type UserTournamentList = {
 export const UsersTournaments = ()=>{
     // const {tournamentId} = useParams();
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [iternalServerError, setIternalServerError] = useState<boolean>(false);
 
     const [usersTournamentsList, setUsersTournamentsList] = useState<UserTournamentList>(
         {
@@ -45,20 +47,29 @@ export const UsersTournaments = ()=>{
         }
     );
     const [curPage, setCurPage] = useState<number>(1);
-    // useEffect(()=>{
-    //     setIsLoading(true);
-    //     api.get(`/tournaments/getUsersTournaments?page=${curPage}`).then(res=>{
-    //         console.dir(res.data);
-    //         setUsersTournamentsList(res.data);
-    //     }).finally(()=>{setIsLoading(false)});
-    // },[curPage]);
+    useEffect(()=>{
+        setIsLoading(true);
+        api.get(`/tournaments/getUsersTournaments?page=${curPage}`).then(res=>{
+            console.dir(res.data);
+            setUsersTournamentsList(res.data);
+        }).catch(error=>{
+            if(error.code && error.code == "ERR_NETWORK")
+            {
+                setIternalServerError(true);
+            }
+            if((error.response.status >= 500 && error.response.status <= 599))
+            {
+                setIternalServerError(true);
+            }
+        }).finally(()=>{setIsLoading(false)});
+    },[curPage]);
 
     useEffect(()=>{
         var columnCount: string = usersTournamentsList?.items.length >= 3 ? "3" : usersTournamentsList?.items.length as unknown as string;
         document.getElementById("qrList")?.style.setProperty('column-count', columnCount);
     }, [usersTournamentsList])
 
-    return <div style={{display:"flex",justifyContent:"center",alignItems:"center",height:"80vh"}}>
+    return <>{iternalServerError ? <div><IternalServerError/></div> : <div style={{display:"flex",justifyContent:"center",alignItems:"center",height:"80vh"}}>
     {isLoading ? <div>
         <Loader loading={isLoading}/>
     </div>:
@@ -92,7 +103,7 @@ export const UsersTournaments = ()=>{
             </div>
         </div>  
     }
-    </div>
+    </div>}</> 
 }
 
 

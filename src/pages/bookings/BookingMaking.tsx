@@ -9,6 +9,7 @@ import api from "../../api/api";
 import { Loader } from "../../utis/components/loader/Loader";
 import { AuthVerify } from "../../utis/scripts/AuthVerify";
 import { toast } from "react-toastify";
+import { IternalServerError } from "../../utis/components/errors/IternalServerError";
 
 export const BookingMaking = () => {
     
@@ -28,6 +29,7 @@ export const BookingMaking = () => {
     const [hoursCountError,setHoursCountError] = useState("");
     const [date, setDate] = useState("");
     const [refresh, setRefresh] = useState<boolean>(false);
+    const [iternalServerError, setIternalServerError] = useState<boolean>(false);
     const apiUrl = `https://localhost:7227;`;
 
     let accessToken = localStorage.getItem('accessToken');
@@ -36,10 +38,14 @@ export const BookingMaking = () => {
     useEffect(()=>{
         api.get(`/booking/calculateBookingPrice?beg=${begTime}&hours=${hoursCount}&seatsCount=${clickedSeats.length}`).then(res=>{
             setPrice(res.data);
-        }).catch(err=>{
-            if(err.response.status >= 500 && err.response.status <= 599)
+        }).catch(error=>{
+            if(error.code && error.code == "ERR_NETWORK")
             {
-                //navigate("/500");
+                setIternalServerError(true);
+            }
+            if((error.response.status >= 500 && error.response.status <= 599))
+            {
+               setIternalServerError(true);
             }
         });
     },[updatePrice,begTime,hoursCount, refresh]);
@@ -72,10 +78,14 @@ export const BookingMaking = () => {
                 console.log("Seatasastast");
                 console.dir(res.data);
                 setSeats(res.data);
-            }).catch(err=>{
-                if(err.response.status >= 500 && err.response.status <= 599)
+            }).catch(error=>{
+                if(error.code && error.code == "ERR_NETWORK")
                 {
-                    //navigate("/500");
+                    setIternalServerError(true);
+                }
+                if((error.response.status >= 500 && error.response.status <= 599))
+                {
+                   setIternalServerError(true);
                 }
             })          
         }     
@@ -91,11 +101,15 @@ export const BookingMaking = () => {
 
     useEffect(()=>{
         api.get(`/booking/seats?roomId=${roomId}`).then(res=>{
-        }).catch(err=>{
-            // if(err.response.status >= 500 && err.response.status <= 599)
-            // {
-            //     navigate("/500");
-            // }
+        }).catch(error=>{
+            if(error.code && error.code == "ERR_NETWORK")
+            {
+                setIternalServerError(true);
+            }
+            if((error.response.status >= 500 && error.response.status <= 599))
+            {
+               setIternalServerError(true);
+            }
         });
     },[refresh]);
   
@@ -137,14 +151,14 @@ export const BookingMaking = () => {
                 setRefresh(!refresh);
                 toast.success("Seats are successfully booked");
             }).catch((error)=>{
-                // if(error.code && error.code == "ERR_NETWORK")
-                // {
-                //     navigate('/500');
-                // }
-                // if((error.response.status >= 500 && error.response.status <= 599))
-                // {
-                //     navigate('/500');
-                // }
+                if(error.code && error.code == "ERR_NETWORK")
+                {
+                    setIternalServerError(true);
+                }
+                if((error.response.status >= 500 && error.response.status <= 599))
+                {
+                    setIternalServerError(true);
+                }
                 const data = error.response.data;
                 if(data.Other)
                 {
@@ -192,11 +206,13 @@ export const BookingMaking = () => {
         console.dir(clickedSeats);
     }
 
-    return<>
-    { AuthVerify() ?
+    return<>{iternalServerError ? <div>
+        <IternalServerError/>
+    </div>:
+    <div>
+        { AuthVerify() ?
         <div style={{"display":"flex","justifyContent":"center","alignItems":"center","width":"100%","height":"80vh","marginTop":"5vh"}}>
         {loading ? 
-
       <div> 
         {/* <ClimbingBoxLoader
             color={"white"}
@@ -265,5 +281,6 @@ export const BookingMaking = () => {
     }
     </div>:<div><h1 className="text-white">Forbiden access</h1></div>
     }
+        </div>}
     </> 
 }

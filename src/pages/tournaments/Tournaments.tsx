@@ -7,6 +7,7 @@ import api from "../../api/api";
 import { TournamentTable } from "./TournamentTable";
 import { Loader } from "../../utis/components/loader/Loader";
 import { toPrimitive } from "mobx/dist/internal";
+import { IternalServerError } from "../../utis/components/errors/IternalServerError";
 
 export type TournamentList = {
     items: Tournament[],
@@ -64,6 +65,7 @@ export const Tournaments = ()=>{
     });
     const [curPage, setCurPage] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(false);
+    const [iternalServerError, setIternalServerError] = useState<boolean>(false);
 
     useEffect(()=>{
         setLoading(true);
@@ -86,10 +88,21 @@ export const Tournaments = ()=>{
             console.dir(res.data);
             setTournamentList(res.data);
            
+        }).catch(error=>{
+            if(error.code && error.code == "ERR_NETWORK")
+            {
+                setIternalServerError(true);
+            }
+            if((error.response.status >= 500 && error.response.status <= 599))
+            {
+                setIternalServerError(true);
+            }
         }).finally(()=>{setLoading(false)});
     },[curPage,refresh]);
    
-    return <div style={{"display":"flex","justifyContent":"center","alignItems":"center","height":"90vh"}}>{loading ? 
+    return <>{iternalServerError ? <div><IternalServerError/></div> 
+    : <div>
+        <div style={{"display":"flex","justifyContent":"center","alignItems":"center","height":"90vh"}}>{loading ? 
     <div>
         <Loader loading={loading}/>
     </div>
@@ -132,6 +145,7 @@ export const Tournaments = ()=>{
     </div>
     }
     </div>
+    </div>}</> 
 }
 
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { ClimbingBoxLoader } from "react-spinners";
 import api from "../../api/api";
+import { IternalServerError } from "../../utis/components/errors/IternalServerError";
 import { Pagination } from "../../utis/components/pagination/Pagination";
 import { RoomItem } from "../../utis/types/types";
 import { RoomTable } from "./RoomTable";
@@ -25,6 +26,7 @@ export const Rooms = () => {
     const [freeSeatsInRowCount, setFreeSeatsInRowCount] = useState<string>("0");
     const [refresh, setRefresh] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
+    const [iternalServerError, setIternalServerError] = useState<boolean>(false);
     const [gamingList, setGamingList] = useState<RoomList>({items:[
         {
             id:"room1",
@@ -66,14 +68,14 @@ export const Rooms = () => {
             setGamingList(res.data);
             setCurPage(res.data.currentPage);
         }).catch(error=>{
-            // if(error.code && error.code == "ERR_NETWORK")
-            // {
-            //     navigate('/500');
-            // }
-            // if((error.response.status >= 500 && error.response.status <= 599))
-            // {
-            //     navigate('/500');
-            // }
+            if(error.code && error.code == "ERR_NETWORK")
+            {
+                setIternalServerError(true);
+            }
+            if((error.response.status >= 500 && error.response.status <= 599))
+            {
+                setIternalServerError(true);
+            }
         }).finally(()=>{setLoading(false)});
     },[curPage, refresh]);
 
@@ -103,7 +105,10 @@ export const Rooms = () => {
     //     }       
     // },[gamingList])
 
-    return <div style={{"display":"flex","justifyContent":"center","alignItems":"center","width":"100%","height":"89vh","marginTop":"1vh"}}>
+    return <>{iternalServerError ? <div>
+        <IternalServerError/>
+    </div>:<div>
+    <div style={{"display":"flex","justifyContent":"center","alignItems":"center","width":"100%","height":"89vh","marginTop":"1vh"}}>
     <div className='d-flex align-items-center justify-content-center w-75 h-100 bg-dark' style={{"color":"white","paddingInline":"2vw", "borderRadius":"2vh"}}>
             <div className="w-100 h-100">
                 <div className="w-100 h-100 p-1">
@@ -140,4 +145,5 @@ export const Rooms = () => {
                 </div>
             </div>
     </div>
+        </div>}</>
 }

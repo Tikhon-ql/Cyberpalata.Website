@@ -10,6 +10,7 @@ export const Notifications = observer(() => {
 
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const [iternalServerError, setIternalServerError] = useState<boolean>(false);
     
     useEffect(()=>{
         if(AuthVerify())
@@ -19,6 +20,15 @@ export const Notifications = observer(() => {
                 console.log("Anime");
                 console.dir(res.data);
                 setNotifications(res.data);
+            }).catch(error=>{
+                if(error.code && error.code == "ERR_NETWORK")
+                {
+                    setIternalServerError(true);
+                }
+                if((error.response.status >= 500 && error.response.status <= 599))
+                {
+                    setIternalServerError(true);
+                }
             }).finally(()=>{setLoading(false)});
         }
     },[headerRerenderStore.state])
@@ -40,12 +50,12 @@ export const Notifications = observer(() => {
         }
     }
 
-    return <>
-        <a onClick={()=>{showNotifications()}} style={{"display":"flex","alignItems":"center"}}>
-               <div className='headerButton notification' style={{"marginRight":"3vh","display":"flex", "alignItems":"center","justifyContent":"center"}}>
-                    <img  src={require(`./../assets/imgs/notifications.png`)}/>
-                    {notifications?.length != 0 && <div className='counter'>{notifications?.length}</div>}
-            </div>
-        </a>    
+    return <> {iternalServerError ? <div></div> :    <a onClick={()=>{showNotifications()}} style={{"display":"flex","alignItems":"center"}}>
+    <div className='headerButton notification' style={{"marginRight":"3vh","display":"flex", "alignItems":"center","justifyContent":"center"}}>
+         <img  src={require(`./../assets/imgs/notifications.png`)}/>
+         {notifications?.length != 0 && <div className='counter'>{notifications?.length}</div>}
+ </div>
+</a>   }
+      
     </>
 })

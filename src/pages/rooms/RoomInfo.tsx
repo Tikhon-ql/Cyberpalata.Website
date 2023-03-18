@@ -9,16 +9,17 @@ import { ClimbingBoxLoader } from 'react-spinners';
 import api from '../../api/api';
 import { Pc, Periphery } from '../../utis/types/types';
 import { Loader } from '../../utis/components/loader/Loader';
+import { IternalServerError } from '../../utis/components/errors/IternalServerError';
   
 export const RoomInfo = () => {
     let navigate = useNavigate();
     const {id} = useParams();
     const {name} = useParams();
     const {type} = useParams();
-    const [iternalServerError, setIternalServerError] = useState<boolean>(false);
     const [peripheries, setPeripheries] = useState<Periphery[]>([]);
     const [device, setDevices] = useState<Pc[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [iternalServerError, setIternalServerError] = useState<boolean>(false);
     useEffect(()=>{
         api.get(`/gamingRooms/getRoomInfo?id=${id}`).then((res:any) => {
             console.dir(res);
@@ -38,7 +39,9 @@ export const RoomInfo = () => {
     },[]);
 
 
-    return <> { iternalServerError ? <div></div>
+    return <> { iternalServerError ? <div>
+                    <IternalServerError/>
+                </div>
 
         : <div style={{"display":"flex","justifyContent":"center","alignItems":"center","width":"100%","height":"80vh"}}>
         {loading ?

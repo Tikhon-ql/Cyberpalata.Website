@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import api from "../../api/api";
+import { IternalServerError } from "../../utis/components/errors/IternalServerError";
 
 export const SelectWinner = () => {
 
@@ -14,6 +15,7 @@ export const SelectWinner = () => {
     const navigate = useNavigate();
 
     const [winnerId, setWinnerId] = useState<string>("");
+    const [iternalServerError, setIternalServerError] = useState<boolean>(false);
 
     function submitWinner(e:any)
     {
@@ -24,16 +26,30 @@ export const SelectWinner = () => {
             winnerId: e.target.elements.winner.value
         }
         console.dir(requestBody);
-        api.post(`/batles/setWinner`,requestBody).then(res=>{navigate(`/showTournamentDetailed/${tournamentId}`)});
+        api.post(`/batles/setWinner`,requestBody).then(res=>{navigate(`/showTournamentDetailed/${tournamentId}`)})
+        .catch((error)=>{
+            if(error.code && error.code == "ERR_NETWORK")
+            {
+                setIternalServerError(true);
+            }
+            if((error.response.status >= 500 && error.response.status <= 599))
+            {
+                setIternalServerError(true);
+            }
+        });
     }
 
-    return (
-        <div style={{"display":"flex","justifyContent":"center","alignItems":"center","width":"100%","height":"80vh",color:"white"}}>
+    return ( <>{iternalServerError ? <div><IternalServerError/></div>:
+        <div> 
+            <div style={{"display":"flex","justifyContent":"center","alignItems":"center","width":"100%","height":"80vh",color:"white"}}>
             <form onSubmit={(e)=>{submitWinner(e)}}>
                 <input id="winner1" name="winner" type="radio" value={firstTeamId}/><label>{firstTeamName}</label>
                 <input id="winner2" name="winner" type="radio" value={secondTeamId}/><label>{secondTeamName}</label>
                 <input type="submit" value="Submit"/>
             </form>
-        </div>
+            </div>
+        </div>}
+    </>
+       
     )
 }

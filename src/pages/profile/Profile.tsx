@@ -10,6 +10,7 @@ import stateStore from "../../utis/stores/stateStore";
 import { TeamInfo } from "../teams/TeamInfo";
 import { Loader } from "../../utis/components/loader/Loader";
 import { Modal } from "../../utis/components/modal/Modal";
+import { IternalServerError } from "../../utis/components/errors/IternalServerError";
 
 export const Profile = observer(() => {
     const [editingActive, setEditingActive] = useState<boolean>(false);
@@ -29,6 +30,7 @@ export const Profile = observer(() => {
     const [surnameError, setSurnameError] = useState<string>("");
     const [emailError, setEmailError] = useState<string>("");
     const [phoneError, setPhoneError] = useState<string>("");
+    const [iternalServerError, setIternalServerError] = useState<boolean>(false);
 
     const [teamName, setTeamName] = useState<string>("");
 
@@ -40,9 +42,17 @@ export const Profile = observer(() => {
             "name": teamName
         };
         api.post(`/teams/createTeam/`,requestBody).then(()=>{ navigate('/profile')
-        }).catch(err=>
+        }).catch(error=>
             {
-                const data = err.response.data;
+                const data = error.response.data;
+                if(error.code && error.code == "ERR_NETWORK")
+                {
+                    setIternalServerError(true);
+                }
+                if((error.response.status >= 500 && error.response.status <= 599))
+                {
+                    setIternalServerError(true);
+                }
                 // if(data.Other)
                 // {
                 //     setOtherError(data.Other);
@@ -68,14 +78,14 @@ export const Profile = observer(() => {
             // setPhone(res.data.phone);
             
         }).catch(error=>{
-            // if(error.code && error.code == "ERR_NETWORK")
-            // {
-            //     navigate('/500');
-            // }
-            // if((error.response.status >= 500 && error.response.status <= 599))
-            // {
-            //     navigate('/500');
-            // }
+            if(error.code && error.code == "ERR_NETWORK")
+            {
+                setIternalServerError(true);
+            }
+            if((error.response.status >= 500 && error.response.status <= 599))
+            {
+                setIternalServerError(true);
+            }
         }).finally(()=>{setLoading(false);});       
     },[submitState, stateStore.state]);
 
@@ -100,10 +110,13 @@ export const Profile = observer(() => {
             setSubmitState(!submitState);
             navigate('/profile');
         }).catch(error=>{
-            console.dir(error);
-            if((error.response.status >= 500 && error.response.status <= 599) || error.code == "ERR_NETWORK")
+            if(error.code && error.code == "ERR_NETWORK")
             {
-                navigate('/');
+                setIternalServerError(true);
+            }
+            if((error.response.status >= 500 && error.response.status <= 599))
+            {
+                setIternalServerError(true);
             }
             const data = error.response.data;
             if(data.Other)
@@ -138,80 +151,81 @@ export const Profile = observer(() => {
         setPhoneError("");
     }
  
-    return <div style={{"display":"flex","justifyContent":"center","alignItems":"center","width":"100%","height":"80vh"}}>{loading ?
-
-            <div>
-                <Loader loading={loading}/>
-            </div>
-             :
-
-            <div className="align-items-center justify-content-center text-white w-50 h-100" style={{"backgroundColor":"#242C48","marginTop":"2vh","borderRadius":"1vw"}}>
-                <div style={{"display":"flex","justifyContent":"space-around","marginTop":"3vh"}}>
-                {!editingActive ?
-                    <a onClick={(e)=>{editingEnableButtonClick(e,true)}} className="headerButton" style={{"display":"flex", "alignItems":"center","justifyContent":"center"}}>
-                        <img src={require(`./../../assets/imgs/edit.png`)}/>
-                    </a>
-                    :<a onClick={(e)=>{editingEnableButtonClick(e,false)}} className="headerButton" style={{"display":"flex", "alignItems":"center","justifyContent":"center"}}>
-                        <img src={require(`./../../assets/imgs/saveChanges.png`)}/>
-                    </a>}
-                    {profile?.hasTeam &&   <Link to="/usersTournaments" className="headerButton" style={{"display":"flex", "alignItems":"center","justifyContent":"center"}}>
-                        <img src={require(`./../../assets/imgs/trophy.png`)}/>
-                    </Link>}
-                    <Link to='/chats' className="headerButton" style={{"display":"flex", "alignItems":"center","justifyContent":"center"}}>
-                        <img src={require(`./../../assets/imgs/messenger.png`)}/>
-                    </Link>
-                    
-                    {profile?.isCaptain && <Link to='/joinRequests' className="headerButton" style={{"display":"flex", "alignItems":"center","justifyContent":"center"}}>
-                        <img src={require(`./../../assets/imgs/joinRequest.png`)}/>
-                    </Link>}
-                    {!profile?.hasTeam &&   <a onClick={()=>{setModalActive(true)}} className="headerButton" style={{"display":"flex", "alignItems":"center","justifyContent":"center"}}>
-                        <img src={require(`./../../assets/imgs/createTeam.png`)}/>
-                    </a>}
-                  
-                </div>
-                <div style={{"display":"flex","marginInline":"8vw","marginTop":"5vh"}}>
-                    <div style={{"marginInline":"2vw","marginTop":"2vw","width":"10vw","height":"10vw"}}>
-                        <img src={require(`./../../assets/imgs/user.png`)}/>
-                    </div>
-                    <div style={{"marginTop":"10vh","width":"12vw","height":"10vw"}}>
-                    <form  method="post" onSubmit={editingSubmit}>
-                    {editingActive ?
-                            <div>
-                                {otherError != "" && <div className="m-1 text-danger">{otherError}</div>}
-                                <div className="d-flex flex-row"><h2 className="text-white"></h2><input id="nameInput" name="name" type="text" onInput={clearErrors} className="form-control bg-transparent border-0 text-white" defaultValue={profile?.username} /></div>
-                                {usernameError != "" && <div className="m-1 text-danger">{usernameError}</div>}
-                                <div className="d-flex flex-row"><h2 className="text-white"></h2><input id="surnameInput" name="surname" type="text" onInput={clearErrors} className="form-control bg-transparent border-0 text-white" defaultValue={profile?.surname}/></div>
-                                {surnameError != "" && <div className="m-1 text-danger">{surnameError}</div>}
-                                <div className="d-flex flex-row"><h2 className="text-white"></h2><input id="emailInput" name="email" type="email" onInput={clearErrors} className="form-control bg-transparent border-0 text-white" defaultValue={profile?.email} /></div>
-                                {emailError != "" && <div className="m-1 text-danger">{emailError}</div>}
-                                <div className="d-flex flex-row"><h2 className="text-white"></h2><input id="phoneInput" name="phone" type="tel" onInput={clearErrors} className="form-control bg-transparent border-0 text-white" defaultValue={profile?.phone}/></div>
-                                {phoneError != "" && <div className="m-1 text-danger">{phoneError}</div>}
-                            </div>
-                            : 
-                            <div>
-                                <div className="d-flex flex-row"><h5 className="text-white" style={{"marginRight":"1vw"}}>Name: </h5><div id = "name" className="h5">{profile?.username} {profile?.surname}</div></div>
-                                <div className="d-flex flex-row"><h5 className="text-white" style={{"marginRight":"1vw"}}>Email: </h5><div id="email" className="h5">{profile?.email}</div></div>
-                                <div className="d-flex flex-row"><h5 className="text-white" style={{"marginRight":"1vw"}}>Phone: </h5><div id="phone" className="h5">{profile?.phone}</div></div>
-                            </div>
-                            
-                        }
-                          {editingActive &&
-                            <input type="submit" style={{"border":"1px solid","padding":"1vh","borderRadius":"1vh"}} value="Save changes"/>}
-                        </form>
-                    </div>
-                </div>
-                {profile?.hasTeam && 
-                    <TeamInfo isCaptain={profile.isCaptain}/>
-                } 
-                <Modal active={modalActive} setActive={setModalActive} >
-                    <form onSubmit={(e)=>{e.preventDefault(); createTeam();}}>
-                        <input type="text" placeholder="Team name..." onChange={(e) =>{setModalActive(false);setTeamName(e.target.value)}}/>
-                        <input type="submit" value="Submit"/>
-                    </form>
-                </Modal>
-            </div>
-           }
+    return <> {iternalServerError ? <div>
+        <IternalServerError/>
+            </div>:<div><div style={{"display":"flex","justifyContent":"center","alignItems":"center","width":"100%","height":"80vh"}}>{loading ?
+        <div>
+    <Loader loading={loading}/>
+</div>
+ :
+<div className="align-items-center justify-content-center text-white w-50 h-100" style={{"backgroundColor":"#242C48","marginTop":"2vh","borderRadius":"1vw"}}>
+    <div style={{"display":"flex","justifyContent":"space-around","marginTop":"3vh"}}>
+    {!editingActive ?
+        <a onClick={(e)=>{editingEnableButtonClick(e,true)}} className="headerButton" style={{"display":"flex", "alignItems":"center","justifyContent":"center"}}>
+            <img src={require(`./../../assets/imgs/edit.png`)}/>
+        </a>
+        :<a onClick={(e)=>{editingEnableButtonClick(e,false)}} className="headerButton" style={{"display":"flex", "alignItems":"center","justifyContent":"center"}}>
+            <img src={require(`./../../assets/imgs/saveChanges.png`)}/>
+        </a>}
+        {profile?.hasTeam &&   <Link to="/usersTournaments" className="headerButton" style={{"display":"flex", "alignItems":"center","justifyContent":"center"}}>
+            <img src={require(`./../../assets/imgs/trophy.png`)}/>
+        </Link>}
+        <Link to='/chats' className="headerButton" style={{"display":"flex", "alignItems":"center","justifyContent":"center"}}>
+            <img src={require(`./../../assets/imgs/messenger.png`)}/>
+        </Link>
+        
+        {profile?.isCaptain && <Link to='/joinRequests' className="headerButton" style={{"display":"flex", "alignItems":"center","justifyContent":"center"}}>
+            <img src={require(`./../../assets/imgs/joinRequest.png`)}/>
+        </Link>}
+        {!profile?.hasTeam &&   <a onClick={()=>{setModalActive(true)}} className="headerButton" style={{"display":"flex", "alignItems":"center","justifyContent":"center"}}>
+            <img src={require(`./../../assets/imgs/createTeam.png`)}/>
+        </a>}
+      
+    </div>
+    <div style={{"display":"flex","marginInline":"8vw","marginTop":"5vh"}}>
+        <div style={{"marginInline":"2vw","marginTop":"2vw","width":"10vw","height":"10vw"}}>
+            <img src={require(`./../../assets/imgs/user.png`)}/>
         </div>
+        <div style={{"marginTop":"10vh","width":"12vw","height":"10vw"}}>
+        <form  method="post" onSubmit={editingSubmit}>
+        {editingActive ?
+                <div>
+                    {otherError != "" && <div className="m-1 text-danger">{otherError}</div>}
+                    <div className="d-flex flex-row"><h2 className="text-white"></h2><input id="nameInput" name="name" type="text" onInput={clearErrors} className="form-control bg-transparent border-0 text-white" defaultValue={profile?.username} /></div>
+                    {usernameError != "" && <div className="m-1 text-danger">{usernameError}</div>}
+                    <div className="d-flex flex-row"><h2 className="text-white"></h2><input id="surnameInput" name="surname" type="text" onInput={clearErrors} className="form-control bg-transparent border-0 text-white" defaultValue={profile?.surname}/></div>
+                    {surnameError != "" && <div className="m-1 text-danger">{surnameError}</div>}
+                    <div className="d-flex flex-row"><h2 className="text-white"></h2><input id="emailInput" name="email" type="email" onInput={clearErrors} className="form-control bg-transparent border-0 text-white" defaultValue={profile?.email} /></div>
+                    {emailError != "" && <div className="m-1 text-danger">{emailError}</div>}
+                    <div className="d-flex flex-row"><h2 className="text-white"></h2><input id="phoneInput" name="phone" type="tel" onInput={clearErrors} className="form-control bg-transparent border-0 text-white" defaultValue={profile?.phone}/></div>
+                    {phoneError != "" && <div className="m-1 text-danger">{phoneError}</div>}
+                </div>
+                : 
+                <div>
+                    <div className="d-flex flex-row"><h5 className="text-white" style={{"marginRight":"1vw"}}>Name: </h5><div id = "name" className="h5">{profile?.username} {profile?.surname}</div></div>
+                    <div className="d-flex flex-row"><h5 className="text-white" style={{"marginRight":"1vw"}}>Email: </h5><div id="email" className="h5">{profile?.email}</div></div>
+                    <div className="d-flex flex-row"><h5 className="text-white" style={{"marginRight":"1vw"}}>Phone: </h5><div id="phone" className="h5">{profile?.phone}</div></div>
+                </div>
+                
+            }
+              {editingActive &&
+                <input type="submit" style={{"border":"1px solid","padding":"1vh","borderRadius":"1vh"}} value="Save changes"/>}
+            </form>
+        </div>
+    </div>
+    {profile?.hasTeam && 
+        <TeamInfo isCaptain={profile.isCaptain}/>
+    } 
+    <Modal active={modalActive} setActive={setModalActive} >
+        <form onSubmit={(e)=>{e.preventDefault(); createTeam();}}>
+            <input type="text" placeholder="Team name..." onChange={(e) =>{setModalActive(false);setTeamName(e.target.value)}}/>
+            <input type="submit" value="Submit"/>
+        </form>
+    </Modal>
+</div>
+}
+</div></div>}
+    </> 
 })
 
 
