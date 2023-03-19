@@ -1,0 +1,9 @@
+diff a/src/App.tsx b/src/App.tsx	(rejected hunks)
+@@ -34,6 +34,7 @@
+ import { joinNotificationsBroadcasting } from './utis/scripts/signalR';
+ import { NotFound } from './utis/components/errors/NotFound';
+ import React from "react";
++import { ApproveTeam } from './pages/ApproveTeam';
+ 
+ export const App = () => {
+ 
