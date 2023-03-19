@@ -8,13 +8,15 @@ import api from "../../api/api";
 import { joinChatRoom, sendMessage, sendNotification } from "../../utis/scripts/signalR";
 import notificationStore from "../../utis/stores/notificationStore";
 import { IternalServerError } from "../../utis/components/errors/IternalServerError";
+import { toast } from "react-toastify";
+import { observer } from "mobx-react-lite";
 // export type MessageList = {
 //     items: Message[],
 //     pageSize: number,
 //     totalItemsCount: number
 // }
 
-export const Chat = ()=>{
+export const Chat = observer(()=>{
     const {chatId} = useParams<string>();
     const {isYouACaptain} = useParams();
     const {teamId} = useParams<string>();
@@ -73,6 +75,7 @@ export const Chat = ()=>{
             {
                 setIternalServerError(true);
             }
+            toast.error(error.response.data.Other);
         });
     }
 
@@ -104,7 +107,7 @@ export const Chat = ()=>{
     </div>
     }
 </> 
-}
+})
 
 
 

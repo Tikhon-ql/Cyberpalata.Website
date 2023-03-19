@@ -2,6 +2,7 @@ import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import jwt_decode from "jwt-decode";
 import { MessageToSend } from "../../utis/types/types";
 import headerRerenderStore from "../stores/headerRerenderStore";
+import notificationRerenderStore from "../stores/notificationRerenderStore";
 import notificationStore from "../stores/notificationStore";
 
 export const joinChatRoom = async(user:any, chat:any, setConnection:any, setMessageList:any)=>{
@@ -81,7 +82,7 @@ export const joinNotificationsBroadcasting = async () => {
     
             connection.on("ReceiveNotification",(user,message)=>{
                 console.log("Hello world!!!");
-                headerRerenderStore.stateChange();
+                notificationRerenderStore.setState();
                 // setMessageList((messages: any)=>[...messages, {user, message}]);
             })
     

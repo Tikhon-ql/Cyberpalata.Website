@@ -146,7 +146,6 @@ export const BookingMaking = () => {
             }
             console.dir(requestBody);
             api.post(`/booking`, requestBody).then(res=>{
-                setClickedSeats([]);
                 setSeats([]);
                 setRefresh(!refresh);
                 toast.success("Seats are successfully booked");
@@ -177,7 +176,7 @@ export const BookingMaking = () => {
                     setHoursCountError(data.HoursCount);
                 }
             })
-            .finally(()=>{ setLoading(false); });
+            .finally(()=>{ setLoading(false);  setClickedSeats([]);setPrice(0)});
         }
     }
 

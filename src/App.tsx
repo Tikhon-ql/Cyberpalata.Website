@@ -34,6 +34,7 @@ import { useState } from 'react';
 import { joinNotificationsBroadcasting } from './utis/scripts/signalR';
 import { NotFound } from './utis/components/errors/NotFound';
 import React from "react";
+import { ApproveTeam } from './pages/ApproveTeam';
 
 export const App = () => {
 
@@ -79,6 +80,7 @@ export const App = () => {
                 <Route path="/selectWinner/:tournamentId/:batleId/:firstTeamName/:firstTeamId/:secondTeamName/:secondTeamId" element={<SelectWinner/>}></Route>
                 <Route path="/404" element={<NotFound/>}/>
                 <Route path="*" element={<Navigate replace to="/404" />} />
+                <Route path="/checkTeam/:tournamentId/:teamId" element={<ApproveTeam/>}/>
                 {/*
                 <Route path="/gamingRoomTypeChoosing" element = {<GamingRoomTypeChoosing/>}/>
                 <Route path="/gamingRooms" element = {<GamingRoomList/>}/>
@@ -90,7 +92,7 @@ export const App = () => {
                 <Route path="/teamCreating" element={<TeamCreating/>}/>
                 <Route path="/bookingView/:isActual" element={<BookingViewComponent/>}/>
                 <Route path="/bookingViewDetail/:id" element={<OneBookingView/>}/>
-                <Route path="/checkTeam/:tournamentId/:teamId" element={<CheckTeam/>}/>
+              
                 <Route path="/searchRoom" element={<RoomSearch/>}/>
                 <Route path="/404" element={<NotFound/>}/>
                 <Route path="*" element={<Navigate replace to="/404" />} />

@@ -109,8 +109,8 @@ export const TreeMap = ({treeData, tournamentId,setModalActive,modalActive}:Prop
     {
       console.log("It's me mario");
       console.dir(e);
-      if(e.batleId && e.firstTeamName && e.firstTeamId && e.secondTeamName && e.secondTeamId && 
-        e.parent.batleId === "00000000-0000-0000-0000-000000000000")
+      if((e.batleId && e.firstTeamName && e.firstTeamId && e.secondTeamName && e.secondTeamId && !e.parent) ||  
+        (e.parent.batleId === "00000000-0000-0000-0000-000000000000" || e.parent.firstTeamId === "00000000-0000-0000-0000-000000000000" || e.parent.secondTeamId === "00000000-0000-0000-0000-000000000000"))
       {
           setCurrentBatle({
             batleId: e.batleId,
@@ -131,7 +131,7 @@ export const TreeMap = ({treeData, tournamentId,setModalActive,modalActive}:Prop
             separation={separation}
             // transitionDuration = {1000}
             pathFunc="elbow"
-            onClick={accessToken?.role === "Admin" ? (e: any)=>{nodeClicked(e)} : (e:any)=>{e.preventDefault()}}
+            onClick={accessToken?.role === "Admin" ? (e: any)=>{nodeClicked(e)} : (e:any)=>{}}
             orientation="vertical"
             translate={{ x: 900, y: 150 }}
             allowForeignObjects={true}

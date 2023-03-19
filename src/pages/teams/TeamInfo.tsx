@@ -55,6 +55,7 @@ export const TeamInfo = ({isCaptain}:Props)=>{
             {
                 setIternalServerError(true);
             }
+            toast.error(error.response.data.Other);
         });
     }
 
@@ -75,7 +76,7 @@ export const TeamInfo = ({isCaptain}:Props)=>{
         });
     }
 
-    return <>{iternalServerError ? <div><IternalServerError/></div> : <div> <div>
+    return <>{iternalServerError ? <div></div> : <div> <div>
     <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
         <h3 style={{"textAlign":"center"}}>{team?.name}</h3>
         {isCaptain ? <div>

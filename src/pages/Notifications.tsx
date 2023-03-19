@@ -6,6 +6,7 @@ import { AuthVerify } from "../utis/scripts/AuthVerify";
 import headerRerenderStore from "../utis/stores/headerRerenderStore";
 import { Notification } from "../utis/types/types";
 import React from "react";
+import notificationRerenderStore from "../utis/stores/notificationRerenderStore";
 
 export const Notifications = observer(() => {
 
@@ -32,7 +33,7 @@ export const Notifications = observer(() => {
                 }
             }).finally(()=>{setLoading(false)});
         }
-    },[headerRerenderStore.state])
+    },[notificationRerenderStore.state])
 
 
     function showNotifications()

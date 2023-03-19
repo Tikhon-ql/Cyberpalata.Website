@@ -128,8 +128,8 @@ export const TournamentDetailed= ()=> {
     // },[treeData]);
     return (<>{iternalServerError ? <div><IternalServerError/></div>: <div>
     {winner != "" && 
-    <div>
-        <h1>Winner: {winner}</h1>
+    <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
+        <h1 className="text-white">Winner: {winner}</h1>
     </div>}
     <TreeMap tournamentId={tournamentId} treeData={treeData} modalActive={modalActive} setModalActive = {setModalActive}/>
 </div>}</>

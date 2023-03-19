@@ -1,3 +1,4 @@
+import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { ToastContainer, toast } from 'react-toastify';
@@ -14,7 +15,7 @@ export type TeamList = {
     totalPageCount: number
 }
 
-export const HiringTeams = () => {
+export const HiringTeams = observer(() => {
 
     const [teamList, setTeamList] = useState<TeamList>();
     const [curPage, setCurPage] = useState<number>(1);
@@ -46,6 +47,7 @@ export const HiringTeams = () => {
             toast.success("Request sended successfully");
             if(team)
             {
+                console.log("Animechnik");
                 sendNotification(notificationStore.connection, team.captainId);
                 console.log("Notifications sent");
             }
@@ -84,4 +86,4 @@ export const HiringTeams = () => {
     </ul>
     </div></div>
     }</> 
-}
+})

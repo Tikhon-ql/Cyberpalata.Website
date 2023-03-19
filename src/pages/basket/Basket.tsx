@@ -26,7 +26,7 @@ export const Basket = () => {
                setIternalServerError(true);
             }
         });
-    });
+    },[]);
 
     return <div className="myConteiner"> {iternalServerError ? <div>
             <IternalServerError/>
@@ -63,12 +63,12 @@ export const Basket = () => {
                             <td style={{"textAlign":"center"}}>
                                 {item.begining}
                             </td>
-                            {/* <td style={{"textAlign":"center"}}>
+                            <td style={{"textAlign":"center"}}>
                                 {item.seats.map((seat: number, index)=>{
                                     return <> {seat}
                                     </>
                                 })}
-                            </td> */}
+                            </td>
                             <td style={{backgroundColor:"#FFC840"}}>
                                 <Link to={`/payment/${item.id}`}>Pay</Link>
                             </td>
